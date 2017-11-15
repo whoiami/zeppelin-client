@@ -315,12 +315,16 @@ PHP_METHOD(Zeppelin, set)
         RETURN_FALSE;
     }
 
+	zval *retValue =NULL;
+	ALLOC_ZVAL(retValue);
+	array_init(retValue);
+
 	libzp::Status s = zp->Set(std::string(key, key_len), std::string(value, value_len), ttl);
-    if (s.ok()) {
-        RETVAL_TRUE;
-    } else {
-        RETVAL_FALSE;
-    }
+	add_next_index_bool(retValue, s.ok());
+	if (!s.ok()) {
+		add_next_index_string(retValue, s.ToString().c_str(), 1);
+	}
+	RETURN_ZVAL(retValue, 1, 1);
 }
 
 PHP_METHOD(Zeppelin, get)
@@ -340,13 +344,19 @@ PHP_METHOD(Zeppelin, get)
         RETURN_FALSE;
     }
 
+	zval *retValue =NULL;
+	ALLOC_ZVAL(retValue);
+	array_init(retValue);
+
     std::string val;
 	libzp::Status s = zp->Get(std::string(key, key_len), &val);
+	add_next_index_bool(retValue, s.ok());
 	if (s.ok()) {
-        RETVAL_STRINGL((char *)val.data(), val.size(), 1);
+		add_next_index_stringl(retValue, (char *)val.data(), val.size(), 1);
 	} else {
-        RETVAL_FALSE;
+		add_next_index_string(retValue, s.ToString().c_str(), 1);
 	}
+	RETURN_ZVAL(retValue, 1, 1);
 }
 
 PHP_METHOD(Zeppelin, mget)
