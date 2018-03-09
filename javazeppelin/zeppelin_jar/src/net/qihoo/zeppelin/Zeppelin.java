@@ -22,7 +22,7 @@ import net.qihoo.zeppelin.ZeppelinException;
 
 public class Zeppelin {
   static {
-    try{
+    try {
       Zeppelin.loadLib();
     } catch(IOException e) {
       System.out.println("load qconf library failed");
@@ -30,7 +30,7 @@ public class Zeppelin {
     }
   }
   public Zeppelin(String ip, String port, String table) {
-    try{
+    try {
       createZeppelin(ip, port, table);
     } catch(ZeppelinException e) {
       e.printStackTrace();
